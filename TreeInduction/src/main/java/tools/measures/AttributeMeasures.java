@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import tools.rules.RBDTRule;
 
@@ -39,15 +38,15 @@ public class AttributeMeasures {
     /**
      * Constructs a new instance of attribute measures.
      * 
-     * @param rules          The dataset of rules per class. Each key of the map
-     *                       should correspond to a class and each value associated
-     *                       with the key should correspond to a list containing all
-     *                       the rules that infer the class.
-     * @param nbAttributes   The number of distinct attributes in the dataset.
-     * @param classesStrings The array of class values. In the paper, the class j is
-     *                       the class value with index j in this array;
+     * @param rules         The dataset of rules per class. Each key of the map
+     *                      should correspond to a class and each value associated
+     *                      with the key should correspond to a list containing all
+     *                      the rules that infer the class.
+     * @param nbAttributes  The number of distinct attributes in the dataset.
+     * @param classesString The array of class values. In the paper, the class j is
+     *                      the class value with index j in this array;
      */
-    public AttributeMeasures(HashMap<String, List<RBDTRule>> rules, int nbAttributes, String[] classesStrings) {
+    public AttributeMeasures(HashMap<String, List<RBDTRule>> rules, int nbAttributes, String[] classesString) {
         if (rules == null) {
             throw new RuntimeException("Rule dataset must not be null");
         }
@@ -92,7 +91,7 @@ public class AttributeMeasures {
      * @param attributeIndex The attribute for which to compute the metric.
      * @return The Attribute Effectiveness (AE) for attribute {@code a_j}.
      */
-    private double attributeEffectiveness(int attributeIndex) {
+    public double attributeEffectiveness(int attributeIndex) {
         int m = 0; // Total number of instances
         int DC_count = 0; // Total count of "don't care" values for attribute a_j
 
@@ -117,25 +116,27 @@ public class AttributeMeasures {
     /**
      * Computes the attribute disjointness given two classes.
      * 
-     * @param A_j The index of the attribute for which to compute the
-     *            metric.
-     * @param C_i The name of the first class.
-     * @param C_k The name of the second class.
+     * @param A_j  The index of the attribute for which to compute the
+     *             metric.
+     * @param C_i  The name of the first class.
+     * @param C_k  The name of the second class.
+     * @param R_ji Represents the rule subset {@code R_ji} consisting of the rules
+     *             that have {@code a_j} appearing with the value {@code v_ji}.
      * @return The disjointness of the attribute with respect to the two given
      *         classes: C_i and C_k.
      */
-    private double attributeDisjointness(int A_j, String C_i, String C_k) {
+    private double attributeDisjointness(int A_j, String C_i, String C_k, List<RBDTRule> R_ji) {
         // The set of values that the attribute A_j can take in rules that infer the
         // class i.
-        Set<String> V_ij = rules.get(C_i)
-                .stream()
+        Set<String> V_ij = R_ji.stream()
+                .filter(rule -> rule.getY().equals(C_i))
                 .map(rule -> rule.getAntecedents()[A_j])
                 .collect(Collectors.toSet());
 
         // The set of values that the attribute A_j can take in rules that infer the
         // class k.
-        Set<String> V_kj = rules.get(C_k)
-                .stream()
+        Set<String> V_kj = R_ji.stream()
+                .filter(rule -> rule.getY().equals(C_k))
                 .map(rule -> rule.getAntecedents()[A_j])
                 .collect(Collectors.toSet());
 
@@ -169,19 +170,22 @@ public class AttributeMeasures {
      */
     private double attributeAutonomy(int A_j, String C_i, Set<Integer> attSet, List<RBDTRule> R_ji) {
         // Computing the value of MaxADS_ji as stated in the paper
-        double maxADS_ji = rules.keySet()
-                .stream()
-                .map(C_k -> attributeDisjointness(A_j, C_i, C_k))
+        double maxADS_ji = R_ji.stream()
+                .map(rule -> attributeDisjointness(A_j, C_i, rule.getY(), R_ji))
                 .mapToDouble(Double::doubleValue)
                 .max()
                 .orElse(0.0);
 
-        /** Computing the ADS value for each attribute in {@code attSet}. */
+        // As stated in the paper the maxADS_ji value should be between 0 and 3*m*(m-1).
+        int m = rules.keySet().size();
+        checkMeasure(maxADS_ji, 0, 3*m*(m-1), "Maximum Attribute Disjointness");
+
+        // Computing the ADS value for each attribute in {@code attSet}.
         List<Double> ADS_List = attSet.stream()
                 .filter(A_k -> A_k != A_j) // Ensure A_k is different from A_j
                 .mapToDouble(A_k -> rules.keySet()
                         .stream()
-                        .mapToDouble(C_k -> attributeDisjointness(A_k, C_i, C_k))
+                        .mapToDouble(C_k -> attributeDisjointness(A_k, C_i, C_k, R_ji))
                         .sum())
                 .boxed()
                 .collect(Collectors.toList());
@@ -202,12 +206,19 @@ public class AttributeMeasures {
         return 1 + (s - 1) * maxADS_ji - ADS_List.stream().mapToDouble(Double::doubleValue).sum();
     }
 
-    private double attributeAutonomy(int A_j, Set<Integer> attSet) {
-        // v_j = v_j1 ... v_jp_j, is the set of possible values for attribute a_j
-        // including the "don't
-        // care" value. p_j is the size of this set. R_ji denotes the rule subset
-        // consisting
-        // of the rules that have a_j appearing with the value v_ji.
+    /**
+     * The second step in computing the Attribute Autonomy (AA) metric.
+     * 
+     * @param A_j    The index of the attribute to compute the metric for.
+     * @param attSet The set of attributes that achieved
+     *               the highest (equal) AE score.
+     * @return The value AA(A_j) as defined in the paper.
+     */
+    public double attributeAutonomy(int A_j, Set<Integer> attSet) {
+        // v_j = {v_j1 ... v_jp_j}, is the set of possible values for attribute a_j
+        // including the "don't care" value. p_j is the size of this set. R_ji denotes
+        // the rule subset consisting of the rules that have a_j appearing with the
+        // value v_ji.
 
         Set<String> v_j = new HashSet<>();
         for (List<RBDTRule> classGroup : rules.values()) {
@@ -229,47 +240,35 @@ public class AttributeMeasures {
             R_ji.put(v_ji, ruleSubset);
         }
 
-        int p_j = 2;
-
-        return 1.0 / IntStream.rangeClosed(1, p_j).mapToDouble(i -> attributeAutonomy(A_j, i)).sum();
-
-    }
-
-    private double minimumValueDistribution(int A_j) {
-        return 0.0;
-    }
-
-    /**
-     * Computes multiple measures for the rule based on the provided measure names.
-     *
-     * @param measureNames An array of measure names for which measures should be
-     *                     computed.
-     * @return An array of computed measures corresponding to the given measure
-     *         names.
-     * @throws RuntimeException If an unknown measure name is encountered.
-     */
-    public double[][] computeMeasures(String[] measureNames) {
-        double[][] measures = new double[measureNames.length][nbAttributes];
-        for (int i = 0; i < measureNames.length; i++) {
-            measures[i] = compute(measureNames[i]);
+        int p_j = v_j.size();
+        double sum = 0.0;
+        // Computing the attribute autonomy for each class.
+        for (int i = 1; i <= p_j; i++) {
+            String classString = classesString[i];
+            List<RBDTRule> R_ji_class = R_ji.get(classString);
+            double autonomy = attributeAutonomy(A_j, classString, attSet, R_ji_class);
+            sum += autonomy;
         }
-        return measures;
+        return 1.0 / sum;
     }
 
     /**
-     * Computes the specified measure for the rule.
-     *
-     * @param measureName The name of the measure to be computed.
-     * @return The computed value of the specified measure.
-     * @throws RuntimeException If an unknown measure name is encountered.
+     * Computes the Minimum value distribution (MVD) metric.
+     * 
+     * @param A_j    The index of the attribute to compute the metric for.
+     * @param attSet The set of attributes that achieved
+     *               the highest (equal) AA score.
+     * @return The value MVD(A_j) as defined in the paper.
      */
-    private double[] compute(String measureName) {
-        if (measureName.equals(AE))
-            return IntStream.range(0, this.nbAttributes).mapToDouble(i -> attributeEffectiveness(i)).toArray();
-        if (measureName.equals(AA))
-            return IntStream.range(0, this.nbAttributes).mapToDouble(i -> attributeAutonomy(i)).toArray();
-        if (measureName.equals(MVD))
-            return IntStream.range(0, this.nbAttributes).mapToDouble(i -> minimumValueDistribution(i)).toArray();
-        throw new RuntimeException("This measure doesn't exist : " + measureName);
+    public double minimumValueDistribution(int A_j, Set<Integer> attSet) {
+        Set<String> v_j = new HashSet<>();
+        for (List<RBDTRule> classGroup : rules.values()) {
+            for (RBDTRule rule : classGroup) {
+                v_j.add(rule.getAntecedents()[A_j]);
+            }
+        }
+
+        // THe number of different values that A_j can have in the dataset
+        return v_j.size();
     }
 }
