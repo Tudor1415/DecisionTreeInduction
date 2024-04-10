@@ -1,0 +1,562 @@
+[
+  {
+    "freqX": 5,
+    "freqY": 46,
+    "freqZ": 5,
+    "Y": "15",
+    "itemsInX": ["12", "3", "6", "9"],
+    "itemsInZ": ["12", "3", "15", "6", "9"]
+  },
+  {
+    "freqX": 5,
+    "freqY": 46,
+    "freqZ": 5,
+    "Y": "15",
+    "itemsInX": ["3", "6", "9"],
+    "itemsInZ": ["3", "15", "6", "9"]
+  },
+  {
+    "freqX": 1,
+    "freqY": 54,
+    "freqZ": 1,
+    "Y": "14",
+    "itemsInX": ["2", "4", "8"],
+    "itemsInZ": ["2", "14", "4", "8"]
+  },
+  {
+    "freqX": 2,
+    "freqY": 50,
+    "freqZ": 2,
+    "Y": "13",
+    "itemsInX": ["1", "4", "7", "10"],
+    "itemsInZ": ["1", "13", "4", "7", "10"]
+  },
+  {
+    "freqX": 30,
+    "freqY": 50,
+    "freqZ": 30,
+    "Y": "13",
+    "itemsInX": ["9", "10"],
+    "itemsInZ": ["13", "9", "10"]
+  },
+  {
+    "freqX": 57,
+    "freqY": 50,
+    "freqZ": 2,
+    "Y": "13",
+    "itemsInX": ["7"],
+    "itemsInZ": ["13", "7"]
+  },
+  {
+    "freqX": 23,
+    "freqY": 54,
+    "freqZ": 6,
+    "Y": "14",
+    "itemsInX": ["12", "7"],
+    "itemsInZ": ["12", "14", "7"]
+  },
+  {
+    "freqX": 57,
+    "freqY": 54,
+    "freqZ": 38,
+    "Y": "14",
+    "itemsInX": ["7"],
+    "itemsInZ": ["14", "7"]
+  },
+  {
+    "freqX": 57,
+    "freqY": 46,
+    "freqZ": 17,
+    "Y": "15",
+    "itemsInX": ["7"],
+    "itemsInZ": ["15", "7"]
+  },
+  {
+    "freqX": 49,
+    "freqY": 54,
+    "freqZ": 4,
+    "Y": "14",
+    "itemsInX": ["12", "3"],
+    "itemsInZ": ["12", "3", "14"]
+  },
+  {
+    "freqX": 50,
+    "freqY": 46,
+    "freqZ": 45,
+    "Y": "15",
+    "itemsInX": ["3"],
+    "itemsInZ": ["3", "15"]
+  },
+  {
+    "freqX": 21,
+    "freqY": 46,
+    "freqZ": 12,
+    "Y": "15",
+    "itemsInX": ["6", "7"],
+    "itemsInZ": ["15", "6", "7"]
+  },
+  {
+    "freqX": 2,
+    "freqY": 50,
+    "freqZ": 2,
+    "Y": "13",
+    "itemsInX": ["4", "7", "10"],
+    "itemsInZ": ["13", "4", "7", "10"]
+  },
+  {
+    "freqX": 39,
+    "freqY": 46,
+    "freqZ": 37,
+    "Y": "15",
+    "itemsInX": ["3", "6"],
+    "itemsInZ": ["3", "15", "6"]
+  },
+  {
+    "freqX": 7,
+    "freqY": 54,
+    "freqZ": 2,
+    "Y": "14",
+    "itemsInX": ["12", "3", "5", "7"],
+    "itemsInZ": ["12", "3", "14", "5", "7"]
+  },
+  {
+    "freqX": 3,
+    "freqY": 50,
+    "freqZ": 3,
+    "Y": "13",
+    "itemsInX": ["1", "5", "9"],
+    "itemsInZ": ["1", "13", "5", "9"]
+  },
+  {
+    "freqX": 50,
+    "freqY": 50,
+    "freqZ": 50,
+    "Y": "13",
+    "itemsInX": ["10"],
+    "itemsInZ": ["13", "10"]
+  },
+  {
+    "freqX": 2,
+    "freqY": 54,
+    "freqZ": 2,
+    "Y": "14",
+    "itemsInX": ["12", "2", "6", "7"],
+    "itemsInZ": ["12", "2", "14", "6", "7"]
+  },
+  {
+    "freqX": 1,
+    "freqY": 54,
+    "freqZ": 1,
+    "Y": "14",
+    "itemsInX": ["11", "2", "5", "9"],
+    "itemsInZ": ["11", "2", "14", "5", "9"]
+  },
+  {
+    "freqX": 7,
+    "freqY": 46,
+    "freqZ": 5,
+    "Y": "15",
+    "itemsInX": ["12", "3", "5", "7"],
+    "itemsInZ": ["12", "3", "15", "5", "7"]
+  },
+  {
+    "freqX": 7,
+    "freqY": 54,
+    "freqZ": 2,
+    "Y": "14",
+    "itemsInX": ["3", "5", "7"],
+    "itemsInZ": ["3", "14", "5", "7"]
+  },
+  {
+    "freqX": 6,
+    "freqY": 54,
+    "freqZ": 5,
+    "Y": "14",
+    "itemsInX": ["2", "5", "8"],
+    "itemsInZ": ["2", "14", "5", "8"]
+  },
+  {
+    "freqX": 8,
+    "freqY": 54,
+    "freqZ": 8,
+    "Y": "14",
+    "itemsInX": ["2", "6", "7"],
+    "itemsInZ": ["2", "14", "6", "7"]
+  },
+  {
+    "freqX": 7,
+    "freqY": 46,
+    "freqZ": 5,
+    "Y": "15",
+    "itemsInX": ["3", "5", "7"],
+    "itemsInZ": ["3", "15", "5", "7"]
+  },
+  {
+    "freqX": 6,
+    "freqY": 46,
+    "freqZ": 1,
+    "Y": "15",
+    "itemsInX": ["2", "5", "8"],
+    "itemsInZ": ["2", "15", "5", "8"]
+  },
+  {
+    "freqX": 18,
+    "freqY": 50,
+    "freqZ": 18,
+    "Y": "13",
+    "itemsInX": ["1", "4", "8", "10"],
+    "itemsInZ": ["1", "13", "4", "8", "10"]
+  },
+  {
+    "freqX": 27,
+    "freqY": 54,
+    "freqZ": 3,
+    "Y": "14",
+    "itemsInX": ["12", "8"],
+    "itemsInZ": ["12", "14", "8"]
+  },
+  {
+    "freqX": 57,
+    "freqY": 50,
+    "freqZ": 18,
+    "Y": "13",
+    "itemsInX": ["8"],
+    "itemsInZ": ["13", "8"]
+  },
+  {
+    "freqX": 57,
+    "freqY": 46,
+    "freqZ": 24,
+    "Y": "15",
+    "itemsInX": ["8"],
+    "itemsInZ": ["15", "8"]
+  },
+  {
+    "freqX": 4,
+    "freqY": 50,
+    "freqZ": 3,
+    "Y": "13",
+    "itemsInX": ["5", "9"],
+    "itemsInZ": ["13", "5", "9"]
+  },
+  {
+    "freqX": 4,
+    "freqY": 54,
+    "freqZ": 1,
+    "Y": "14",
+    "itemsInX": ["5", "9"],
+    "itemsInZ": ["14", "5", "9"]
+  },
+  {
+    "freqX": 11,
+    "freqY": 54,
+    "freqZ": 11,
+    "Y": "14",
+    "itemsInX": ["11", "4", "7"],
+    "itemsInZ": ["11", "14", "4", "7"]
+  },
+  {
+    "freqX": 30,
+    "freqY": 50,
+    "freqZ": 30,
+    "Y": "13",
+    "itemsInX": ["1", "9"],
+    "itemsInZ": ["1", "13", "9"]
+  },
+  {
+    "freqX": 3,
+    "freqY": 54,
+    "freqZ": 2,
+    "Y": "14",
+    "itemsInX": ["12", "2", "8"],
+    "itemsInZ": ["12", "2", "14", "8"]
+  },
+  {
+    "freqX": 21,
+    "freqY": 54,
+    "freqZ": 4,
+    "Y": "14",
+    "itemsInX": ["3", "7"],
+    "itemsInZ": ["3", "14", "7"]
+  },
+  {
+    "freqX": 21,
+    "freqY": 46,
+    "freqZ": 17,
+    "Y": "15",
+    "itemsInX": ["3", "7"],
+    "itemsInZ": ["3", "15", "7"]
+  },
+  {
+    "freqX": 21,
+    "freqY": 54,
+    "freqZ": 21,
+    "Y": "14",
+    "itemsInX": ["11", "2", "5"],
+    "itemsInZ": ["11", "2", "14", "5"]
+  },
+  {
+    "freqX": 3,
+    "freqY": 50,
+    "freqZ": 3,
+    "Y": "13",
+    "itemsInX": ["1", "5"],
+    "itemsInZ": ["1", "13", "5"]
+  },
+  {
+    "freqX": 13,
+    "freqY": 46,
+    "freqZ": 12,
+    "Y": "15",
+    "itemsInX": ["12", "3", "6", "7"],
+    "itemsInZ": ["12", "3", "15", "6", "7"]
+  },
+  {
+    "freqX": 1,
+    "freqY": 54,
+    "freqZ": 1,
+    "Y": "14",
+    "itemsInX": ["2", "5", "9"],
+    "itemsInZ": ["2", "14", "5", "9"]
+  },
+  {
+    "freqX": 45,
+    "freqY": 54,
+    "freqZ": 45,
+    "Y": "14",
+    "itemsInX": ["11"],
+    "itemsInZ": ["11", "14"]
+  },
+  {
+    "freqX": 3,
+    "freqY": 46,
+    "freqZ": 3,
+    "Y": "15",
+    "itemsInX": ["3", "5", "8"],
+    "itemsInZ": ["3", "15", "5", "8"]
+  },
+  {
+    "freqX": 27,
+    "freqY": 50,
+    "freqZ": 27,
+    "Y": "13",
+    "itemsInX": ["1", "4", "9", "10"],
+    "itemsInZ": ["1", "13", "4", "9", "10"]
+  },
+  {
+    "freqX": 36,
+    "freqY": 50,
+    "freqZ": 30,
+    "Y": "13",
+    "itemsInX": ["9"],
+    "itemsInZ": ["13", "9"]
+  },
+  {
+    "freqX": 36,
+    "freqY": 54,
+    "freqZ": 1,
+    "Y": "14",
+    "itemsInX": ["9"],
+    "itemsInZ": ["14", "9"]
+  },
+  {
+    "freqX": 36,
+    "freqY": 46,
+    "freqZ": 5,
+    "Y": "15",
+    "itemsInX": ["9"],
+    "itemsInZ": ["15", "9"]
+  },
+  {
+    "freqX": 2,
+    "freqY": 50,
+    "freqZ": 2,
+    "Y": "13",
+    "itemsInX": ["7", "10"],
+    "itemsInZ": ["13", "7", "10"]
+  },
+  {
+    "freqX": 36,
+    "freqY": 46,
+    "freqZ": 9,
+    "Y": "15",
+    "itemsInX": ["5"],
+    "itemsInZ": ["15", "5"]
+  },
+  {
+    "freqX": 50,
+    "freqY": 50,
+    "freqZ": 50,
+    "Y": "13",
+    "itemsInX": ["1"],
+    "itemsInZ": ["1", "13"]
+  },
+  {
+    "freqX": 5,
+    "freqY": 46,
+    "freqZ": 5,
+    "Y": "15",
+    "itemsInX": ["6", "9"],
+    "itemsInZ": ["15", "6", "9"]
+  },
+  {
+    "freqX": 27,
+    "freqY": 50,
+    "freqZ": 27,
+    "Y": "13",
+    "itemsInX": ["4", "9", "10"],
+    "itemsInZ": ["13", "4", "9", "10"]
+  },
+  {
+    "freqX": 13,
+    "freqY": 50,
+    "freqZ": 2,
+    "Y": "13",
+    "itemsInX": ["4", "7"],
+    "itemsInZ": ["13", "4", "7"]
+  },
+  {
+    "freqX": 2,
+    "freqY": 54,
+    "freqZ": 1,
+    "Y": "14",
+    "itemsInX": ["12", "2", "5"],
+    "itemsInZ": ["12", "2", "14", "5"]
+  },
+  {
+    "freqX": 2,
+    "freqY": 46,
+    "freqZ": 1,
+    "Y": "15",
+    "itemsInX": ["12", "2", "5"],
+    "itemsInZ": ["12", "2", "15", "5"]
+  },
+  {
+    "freqX": 55,
+    "freqY": 46,
+    "freqZ": 46,
+    "Y": "15",
+    "itemsInX": ["12"],
+    "itemsInZ": ["12", "15"]
+  },
+  {
+    "freqX": 3,
+    "freqY": 50,
+    "freqZ": 3,
+    "Y": "13",
+    "itemsInX": ["1", "5", "9", "10"],
+    "itemsInZ": ["1", "13", "5", "9", "10"]
+  },
+  {
+    "freqX": 1,
+    "freqY": 54,
+    "freqZ": 1,
+    "Y": "14",
+    "itemsInX": ["11", "3", "4", "7"],
+    "itemsInZ": ["11", "3", "14", "4", "7"]
+  },
+  {
+    "freqX": 18,
+    "freqY": 50,
+    "freqZ": 18,
+    "Y": "13",
+    "itemsInX": ["1", "4", "8"],
+    "itemsInZ": ["1", "13", "4", "8"]
+  },
+  {
+    "freqX": 18,
+    "freqY": 50,
+    "freqZ": 18,
+    "Y": "13",
+    "itemsInX": ["8", "10"],
+    "itemsInZ": ["13", "8", "10"]
+  },
+  {
+    "freqX": 55,
+    "freqY": 54,
+    "freqZ": 18,
+    "Y": "14",
+    "itemsInX": ["6"],
+    "itemsInZ": ["14", "6"]
+  },
+  {
+    "freqX": 55,
+    "freqY": 46,
+    "freqZ": 37,
+    "Y": "15",
+    "itemsInX": ["6"],
+    "itemsInZ": ["15", "6"]
+  },
+  {
+    "freqX": 1,
+    "freqY": 54,
+    "freqZ": 1,
+    "Y": "14",
+    "itemsInX": ["11", "3"],
+    "itemsInZ": ["11", "3", "14"]
+  },
+  {
+    "freqX": 50,
+    "freqY": 46,
+    "freqZ": 1,
+    "Y": "15",
+    "itemsInX": ["2"],
+    "itemsInZ": ["2", "15"]
+  },
+  {
+    "freqX": 3,
+    "freqY": 50,
+    "freqZ": 3,
+    "Y": "13",
+    "itemsInX": ["5", "9", "10"],
+    "itemsInZ": ["13", "5", "9", "10"]
+  },
+  {
+    "freqX": 6,
+    "freqY": 54,
+    "freqZ": 6,
+    "Y": "14",
+    "itemsInX": ["11", "6", "7"],
+    "itemsInZ": ["11", "14", "6", "7"]
+  },
+  {
+    "freqX": 19,
+    "freqY": 54,
+    "freqZ": 1,
+    "Y": "14",
+    "itemsInX": ["4", "8"],
+    "itemsInZ": ["14", "4", "8"]
+  },
+  {
+    "freqX": 5,
+    "freqY": 46,
+    "freqZ": 5,
+    "Y": "15",
+    "itemsInX": ["3", "9"],
+    "itemsInZ": ["3", "15", "9"]
+  },
+  {
+    "freqX": 23,
+    "freqY": 46,
+    "freqZ": 5,
+    "Y": "15",
+    "itemsInX": ["5", "7"],
+    "itemsInZ": ["15", "5", "7"]
+  },
+  {
+    "freqX": 10,
+    "freqY": 46,
+    "freqZ": 8,
+    "Y": "15",
+    "itemsInX": ["3", "5"],
+    "itemsInZ": ["3", "15", "5"]
+  },
+  {
+    "freqX": 3,
+    "freqY": 50,
+    "freqZ": 3,
+    "Y": "13",
+    "itemsInX": ["1", "5", "10"],
+    "itemsInZ": ["1", "13", "5", "10"]
+  }
+]

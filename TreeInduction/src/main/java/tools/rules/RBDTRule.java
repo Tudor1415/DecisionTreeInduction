@@ -1,5 +1,7 @@
 package tools.rules;
 
+import java.util.Map;
+
 import lombok.Getter;
 
 /**
@@ -12,8 +14,8 @@ public class RBDTRule {
     /** The class of the decision rule */
     private String Y;
 
-    /** The array of the antecedents of the rule containing the don't care values */
-    private String[] itemsInX;
+    /** The map of the antecedents of the rule containing the don't care values */
+    private Map<Integer, String> attributeValueMap;
 
     /**
      * The atomic frequencies of the rule:
@@ -29,24 +31,25 @@ public class RBDTRule {
     private int freqX, freqY, freqZ;
 
     /**
-     * Constructs an {@code RBDTRule} with the specified class string, antecedents,
+     * Constructs an {@code RBDTRule} with the specified class string, atributes,
      * and frequencies.
      *
-     * @param Y           The class of the decision rule.
-     * @param antecedents The array of antecedents (antecedent index -> value) of
-     *                    the rule.
-     *                    Contain's the don't care values "DC" for items that
-     *                    aren't present in the rule's antecedent.
-     * @param freqX       The frequency of the antecedent values (all present at
-     *                    once) in the dataset.
-     * @param freqY       The frequency of the consequent value (the class) in
-     *                    the dataset.
-     * @param freqZ       The frequency of both the antecedent and consequent
-     *                    values present at the same time.
+     * @param Y                 The class of the decision rule.
+     * @param attributeValueMap The map of attributes (attribute index -> value) of
+     *                          the rule.
+     *                          Contain's the don't care values "DC" for items that
+     *                          aren't present in the rule's antecedent.
+     * @param freqX             The frequency of the antecedent values (all present
+     *                          at
+     *                          once) in the dataset.
+     * @param freqY             The frequency of the consequent value (the class) in
+     *                          the dataset.
+     * @param freqZ             The frequency of both the antecedent and consequent
+     *                          values present at the same time.
      */
-    public RBDTRule(String Y, String[] antecedents, int freqX, int freqY, int freqZ) {
+    public RBDTRule(String Y, Map<Integer, String> attributeValueMap, int freqX, int freqY, int freqZ) {
         this.Y = Y;
-        this.itemsInX = antecedents;
+        this.attributeValueMap = attributeValueMap;
         this.freqX = freqX;
         this.freqY = freqY;
         this.freqZ = freqZ;

@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import tools.rules.RBDTRule;
+import tools.rules.Rule;
 
 public class RBDTRuleUtil {
 
@@ -30,25 +31,26 @@ public class RBDTRuleUtil {
 
         try (FileReader reader = new FileReader(fileString)) {
             Gson gson = new Gson();
-            Type listType = new TypeToken<List<RBDTRule>>() {
+            Type listType = new TypeToken<List<Rule>>() {
             }.getType();
-            List<RBDTRule> ruleList = gson.fromJson(reader, listType);
+            List<Rule> ruleList = gson.fromJson(reader, listType);
 
-            for (RBDTRule rule : ruleList) {
-                String[] antecedentsWithDC = new String[attributeValueMap.keySet().size()];
+            for (Rule rule : ruleList) {
+                Map<Integer, String> attributeValueMapWithDC = new HashMap<>();
 
                 // Initializing the antecedent with don't care values.
-                for (int i = 0; i < attributeValueMap.keySet().size(); i++) {
-                    antecedentsWithDC[i] = "DC";
+                for (Integer key : attributeValueMap.keySet()) {
+                    attributeValueMapWithDC.put(key, "DC");
                 }
 
                 // Overriding the "don't care" values with values red from the JSON file.
                 for (String value : rule.getItemsInX()) {
                     int att = valueAttributeMap.get(value);
-                    antecedentsWithDC[att] = value;
+                    attributeValueMapWithDC.put(att, value);
+
                 }
 
-                RBDTRule newRule = new RBDTRule(rule.getY(), antecedentsWithDC, rule.getFreqX(), rule.getFreqY(),
+                RBDTRule newRule = new RBDTRule(rule.getY(), attributeValueMapWithDC, rule.getFreqX(), rule.getFreqY(),
                         rule.getFreqZ());
 
                 rules.add(newRule);

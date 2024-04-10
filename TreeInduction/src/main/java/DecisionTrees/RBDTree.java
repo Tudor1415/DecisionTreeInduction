@@ -16,26 +16,34 @@ import tools.rules.RBDTRule;
 public class RBDTree {
 
     @Getter
+    /** The root node of the decision tree. */
     private Node root;
 
+    /** An array containing the names of all the available classes */
     private String[] classesString;
 
+    /** A map regroupping the available rules by class. */
     private Map<String, List<RBDTRule>> rules;
 
-    // The number of distinct attributes ex: petal length, petal with, sepal length,
-    // sepal width. (Iris dataset)
-    private int numAttributes;
-
-    // For rounding errors
+    /** For rounding errors. */
     private static double epsilon = 0.01;
 
-    // Constructor
+    /**
+     * Constructs a decision tree based on pre existing rules and the RBDT-1
+     * algorithm.
+     * 
+     * @param CR            The list of rules from which to construct the decision
+     *                      tree.
+     * @param numAttributes The number of distinct attributes ex: petal length,
+     *                      petal with, sepal length, sepal width. (Iris dataset)
+     */
     public RBDTree(List<RBDTRule> CR, int numAttributes) {
-        this.numAttributes = numAttributes;
-
         this.classesString = getClassesString(CR);
         this.rules = groupRulesByClass(CR);
-        this.root = buildDecisionTree(CR);
+
+        // At the beginning, all the attributes are available
+        Set<Integer> availableAttributes = IntStream.range(0, numAttributes).boxed().collect(Collectors.toSet());
+        this.root = buildDecisionTree(CR, availableAttributes);
     }
 
     // Groups a list of rules by class
@@ -58,12 +66,15 @@ public class RBDTree {
     }
 
     // Helper method to recursively build the decision tree
-    private Node buildDecisionTree(List<RBDTRule> CR) {
+    private Node buildDecisionTree(List<RBDTRule> CR, Set<Integer> availableAttributes) {
         if (CR.isEmpty()) {
             return new Node(getMostFrequentClass(CR)); // Leaf node with most frequent class
         }
 
-        int fitAttribute = selectFitAttribute(CR, this.numAttributes);
+        int fitAttribute = selectFitAttribute(CR, availableAttributes);
+
+        // Removing the selected attribute to avoid inifinite loop
+        availableAttributes.remove(fitAttribute);
 
         Node node = new Node("A_" + fitAttribute);
 
@@ -72,12 +83,12 @@ public class RBDTree {
         for (String value : attributeValues) {
             List<RBDTRule> RR = getSubsetRules(CR, fitAttribute, value);
 
-            if (RR.isEmpty()) {
+            if (RR.isEmpty() || availableAttributes.isEmpty()) {
                 node.getBranches().put(value, new Node(getMostFrequentClass(CR))); // Leaf node with most frequent class
             } else if (allRulesBelongToSameClass(RR)) {
                 node.getBranches().put(value, new Node(RR.get(0).getY())); // Leaf node with decision class
             } else {
-                node.getBranches().put(value, buildDecisionTree(RR)); // Recursively build subtree
+                node.getBranches().put(value, buildDecisionTree(RR, availableAttributes)); // Recursively build subtree
             }
         }
 
@@ -108,23 +119,23 @@ public class RBDTree {
     }
 
     // Method to select the fit attribute based on attribute selection criteria
-    private int selectFitAttribute(List<RBDTRule> CR, int numAttributes) {
+    private int selectFitAttribute(List<RBDTRule> CR, Set<Integer> availableAttributes) {
         // Grouping the rules by class
         Map<String, List<RBDTRule>> rules = groupRulesByClass(CR);
 
         // Search for the attributes that have the maximum AE score.
-        List<Double> AE_values = IntStream.range(0, numAttributes)
-                .mapToDouble(attIndex -> attributeEffectiveness(attIndex, rules))
-                .boxed()
-                .collect(Collectors.toList());
+        // Maps the attribute to its corresponding AE score.
+        Map<Integer, Double> AE_valueMap = availableAttributes.stream()
+                .collect(Collectors.toMap(
+                        attIndex -> attIndex,
+                        attIndex -> attributeEffectiveness(attIndex, rules)));
 
         // Find the maximum AE value
-        double maxAEValue = Collections.max(AE_values);
+        double maxAEValue = Collections.max(AE_valueMap.values());
 
         // Find the indices (attribute indexes) that have the maximum AE value
-        Set<Integer> maxAEAttributes = IntStream.range(0, AE_values.size())
-                .filter(i -> Double.compare(AE_values.get(i), maxAEValue) == 0)
-                .boxed()
+        Set<Integer> maxAEAttributes = availableAttributes.stream()
+                .filter(attribute -> Double.compare(AE_valueMap.get(attribute), maxAEValue) == 0)
                 .collect(Collectors.toSet());
 
         // If there is only one attribute with the maximum AE score, return it.
@@ -134,17 +145,17 @@ public class RBDTree {
 
         // Else through the attributes with max AE score search for attributes with max
         // AA score.
-        List<Double> AA_values = maxAEAttributes.stream()
-                .mapToDouble(attIndex -> attributeAutonomy(attIndex, maxAEAttributes, rules))
-                .boxed()
-                .collect(Collectors.toList());
+        Map<Integer, Double> AA_valueMap = maxAEAttributes.stream()
+                .collect(Collectors.toMap(
+                        attIndex -> attIndex,
+                        attIndex -> attributeAutonomy(attIndex, maxAEAttributes, rules)));
 
         // Find the maximum AA value
-        double maxAAValue = Collections.max(AA_values);
+        double maxAAValue = Collections.max(AA_valueMap.values());
 
         // Find the indices (attribute indexes) that have the maximum AA value
         Set<Integer> maxAAAttributes = maxAEAttributes.stream()
-                .filter(i -> Double.compare(AA_values.get(i), maxAAValue) == 0)
+                .filter(i -> Double.compare(AA_valueMap.get(i), maxAAValue) == 0)
                 .collect(Collectors.toSet());
 
         // If there is only one attribute with max AA score, return it.
@@ -154,17 +165,17 @@ public class RBDTree {
 
         // Else through the attributes with max AA score search for attributes with min
         // MVD score.
-        List<Double> MVD_values = maxAAAttributes.stream()
-                .mapToDouble(attIndex -> minimumValueDistribution(attIndex, maxAAAttributes))
-                .boxed()
-                .collect(Collectors.toList());
+        Map<Integer, Double> MVD_valueMap = maxAAAttributes.stream()
+                .collect(Collectors.toMap(
+                        attIndex -> attIndex,
+                        attIndex -> minimumValueDistribution(attIndex, maxAAAttributes)));
 
         // Find the maximum AA value
-        double minMVDValue = Collections.min(MVD_values);
+        double minMVDValue = Collections.min(MVD_valueMap.values());
 
         // Find the indices (attribute indexes) that have the maximum AA value
         Set<Integer> minMVDAttributes = maxAAAttributes.stream()
-                .filter(i -> Double.compare(AA_values.get(i), minMVDValue) == 0)
+                .filter(i -> Double.compare(MVD_valueMap.get(i), minMVDValue) == 0)
                 .collect(Collectors.toSet());
 
         // If there is only one attribute with max MVD score, return it.
@@ -178,7 +189,7 @@ public class RBDTree {
 
         // Collect unique values of the specified attribute
         for (RBDTRule rule : rules) {
-            String attributeValue = rule.getItemsInX()[A_j];
+            String attributeValue = rule.getAttributeValueMap().get(A_j);
             attributeValues.add(attributeValue);
         }
 
@@ -191,7 +202,7 @@ public class RBDTree {
 
         // Filter rules based on the specific attribute value
         for (RBDTRule rule : rules) {
-            if (rule.getItemsInX()[A_j].equals(value)) {
+            if (rule.getAttributeValueMap().get(A_j).equals(value)) {
                 subsetRules.add(rule);
             }
         }
@@ -231,14 +242,14 @@ public class RBDTree {
      * <li>a_j is the attribute being evaluated for AE.</li>
      * </ul>
      *
-     * @param attributeIndex The attribute for which to compute the metric.
-     * @param rules          The dataset of rules per class. Each key of the map
-     *                       should correspond to a class and each value associated
-     *                       with the key should correspond to a list containing all
-     *                       the rules that infer the class.
+     * @param A_j   The attribute for which to compute the metric.
+     * @param rules The dataset of rules per class. Each key of the map
+     *              should correspond to a class and each value associated
+     *              with the key should correspond to a list containing all
+     *              the rules that infer the class.
      * @return The Attribute Effectiveness (AE) for attribute {@code a_j}.
      */
-    private double attributeEffectiveness(int attributeIndex, Map<String, List<RBDTRule>> rules) {
+    private double attributeEffectiveness(int A_j, Map<String, List<RBDTRule>> rules) {
         int m = 0; // Total number of instances
         int DC_count = 0; // Total count of "don't care" values for attribute a_j
 
@@ -246,7 +257,7 @@ public class RBDTree {
         for (List<RBDTRule> classRules : rules.values()) {
             for (RBDTRule rule : classRules) {
                 m++;
-                if (rule.getItemsInX()[attributeIndex].equals("DC")) {
+                if (rule.getAttributeValueMap().get(A_j).equals("DC")) {
                     DC_count++;
                 }
             }
@@ -277,14 +288,14 @@ public class RBDTree {
         // class i.
         Set<String> V_ij = R_ji.stream()
                 .filter(rule -> rule.getY().equals(C_i))
-                .map(rule -> rule.getItemsInX()[A_j])
+                .map(rule -> rule.getAttributeValueMap().get(A_j))
                 .collect(Collectors.toSet());
 
         // The set of values that the attribute A_j can take in rules that infer the
         // class k.
         Set<String> V_kj = R_ji.stream()
                 .filter(rule -> rule.getY().equals(C_k))
-                .map(rule -> rule.getItemsInX()[A_j])
+                .map(rule -> rule.getAttributeValueMap().get(A_j))
                 .collect(Collectors.toSet());
 
         // Computing the intersection of sets V_ij and V_kj
@@ -375,7 +386,7 @@ public class RBDTree {
         Set<String> v_j = new HashSet<>();
         for (List<RBDTRule> classGroup : rules.values()) {
             for (RBDTRule rule : classGroup) {
-                v_j.add(rule.getItemsInX()[A_j]);
+                v_j.add(rule.getAttributeValueMap().get(A_j));
             }
         }
 
@@ -387,7 +398,7 @@ public class RBDTree {
         for (String v_ji : v_j) {
             List<RBDTRule> ruleSubset = rules.values().stream()
                     .flatMap(List::stream)
-                    .filter(rule -> rule.getItemsInX()[A_j].equals(v_ji))
+                    .filter(rule -> rule.getAttributeValueMap().get(A_j).equals(v_ji))
                     .collect(Collectors.toList());
             R_ji.put(v_ji, ruleSubset);
         }
@@ -417,7 +428,7 @@ public class RBDTree {
         Set<String> v_j = new HashSet<>();
         for (List<RBDTRule> classGroup : rules.values()) {
             for (RBDTRule rule : classGroup) {
-                v_j.add(rule.getItemsInX()[A_j]);
+                v_j.add(rule.getAttributeValueMap().get(A_j));
             }
         }
 

@@ -26,28 +26,26 @@ public class RBDTRuleUtilTest {
         // The list of rules red from the file
         List<RBDTRule> rules = RBDTRuleUtil.readRulesFromFile(fileString, attributeValueMap);
 
-        // Assert the result
+        // Assertions
         assertNotNull(rules);
-        assertEquals(70, rules.size()); 
+        assertEquals(70, rules.size());
     }
 
     @Test
     public void testInvertMap() {
-        // Create test data
+        // Test data
         Map<Integer, String[]> originalMap = new HashMap<>();
-        originalMap.put(1, new String[]{"A", "B"});
-        originalMap.put(2, new String[]{"X", "Y"});
+        originalMap.put(1, new String[] { "A", "B" });
+        originalMap.put(2, new String[] { "X", "Y" });
 
-        // Call the method
         Map<String, Integer> invertedMap = RBDTRuleUtil.invertMap(originalMap);
 
-        // Assert the result
+        // Assertions
         assertNotNull(invertedMap);
-        assertEquals(4, invertedMap.size()); // Assuming 4 key-value pairs are generated, adjust accordingly
+        assertEquals(4, invertedMap.size());
         assertEquals(1, invertedMap.get("A"));
         assertEquals(1, invertedMap.get("B"));
         assertEquals(2, invertedMap.get("X"));
         assertEquals(2, invertedMap.get("Y"));
-        // Add more assertions as needed
     }
 }
