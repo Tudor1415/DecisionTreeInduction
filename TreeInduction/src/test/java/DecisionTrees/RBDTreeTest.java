@@ -29,7 +29,7 @@ public class RBDTreeTest {
                 attributeValueMap);
 
         // Create an instance of RBDTree and test its functionality
-        RBDTree tree = new RBDTree(rules);
+        RBDTree tree = new RBDTree(rules, 4);
 
         TreeUtil.printTreeToFile("src/test/output/IrisTree.txt", tree.getRoot());
     }
