@@ -37,7 +37,7 @@ public class RBDTRuleUtil {
             for (RBDTRule rule : ruleList) {
                 String[] antecedentsWithDC = new String[attributeValueMap.keySet().size()];
 
-                // Initialazing the antecedent with don't care values.
+                // Initializing the antecedent with don't care values.
                 for (int i = 0; i < attributeValueMap.keySet().size(); i++) {
                     antecedentsWithDC[i] = "DC";
                 }

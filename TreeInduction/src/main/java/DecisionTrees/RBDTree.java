@@ -1,12 +1,14 @@
 package DecisionTrees;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lombok.Getter;
 import tools.rules.RBDTRule;
@@ -20,11 +22,17 @@ public class RBDTree {
 
     private Map<String, List<RBDTRule>> rules;
 
+    // The number of distinct attributes ex: petal length, petal with, sepal length,
+    // sepal width. (Iris dataset)
+    private int numAttributes;
+
     // For rounding errors
-    public static double epsilon = 0.01;
+    private static double epsilon = 0.01;
 
     // Constructor
-    public RBDTree(List<RBDTRule> CR) {
+    public RBDTree(List<RBDTRule> CR, int numAttributes) {
+        this.numAttributes = numAttributes;
+
         this.classesString = getClassesString(CR);
         this.rules = groupRulesByClass(CR);
         this.root = buildDecisionTree(CR);
@@ -55,7 +63,7 @@ public class RBDTree {
             return new Node(getMostFrequentClass(CR)); // Leaf node with most frequent class
         }
 
-        int fitAttribute = selectFitAttribute(CR);
+        int fitAttribute = selectFitAttribute(CR, this.numAttributes);
 
         Node node = new Node("A_" + fitAttribute);
 
@@ -100,9 +108,68 @@ public class RBDTree {
     }
 
     // Method to select the fit attribute based on attribute selection criteria
-    private int selectFitAttribute(List<RBDTRule> rules) {
-        // Implementation of selecting the fit attribute
-        return 0; // Placeholder, implement your logic here
+    private int selectFitAttribute(List<RBDTRule> CR, int numAttributes) {
+        // Grouping the rules by class
+        Map<String, List<RBDTRule>> rules = groupRulesByClass(CR);
+
+        // Search for the attributes that have the maximum AE score.
+        List<Double> AE_values = IntStream.range(0, numAttributes)
+                .mapToDouble(attIndex -> attributeEffectiveness(attIndex, rules))
+                .boxed()
+                .collect(Collectors.toList());
+
+        // Find the maximum AE value
+        double maxAEValue = Collections.max(AE_values);
+
+        // Find the indices (attribute indexes) that have the maximum AE value
+        Set<Integer> maxAEAttributes = IntStream.range(0, AE_values.size())
+                .filter(i -> Double.compare(AE_values.get(i), maxAEValue) == 0)
+                .boxed()
+                .collect(Collectors.toSet());
+
+        // If there is only one attribute with the maximum AE score, return it.
+        if (maxAEAttributes.size() == 1) {
+            return maxAEAttributes.iterator().next();
+        }
+
+        // Else through the attributes with max AE score search for attributes with max
+        // AA score.
+        List<Double> AA_values = maxAEAttributes.stream()
+                .mapToDouble(attIndex -> attributeAutonomy(attIndex, maxAEAttributes, rules))
+                .boxed()
+                .collect(Collectors.toList());
+
+        // Find the maximum AA value
+        double maxAAValue = Collections.max(AA_values);
+
+        // Find the indices (attribute indexes) that have the maximum AA value
+        Set<Integer> maxAAAttributes = maxAEAttributes.stream()
+                .filter(i -> Double.compare(AA_values.get(i), maxAAValue) == 0)
+                .collect(Collectors.toSet());
+
+        // If there is only one attribute with max AA score, return it.
+        if (maxAAAttributes.size() == 1) {
+            return maxAAAttributes.iterator().next();
+        }
+
+        // Else through the attributes with max AA score search for attributes with min
+        // MVD score.
+        List<Double> MVD_values = maxAAAttributes.stream()
+                .mapToDouble(attIndex -> minimumValueDistribution(attIndex, maxAAAttributes))
+                .boxed()
+                .collect(Collectors.toList());
+
+        // Find the maximum AA value
+        double minMVDValue = Collections.min(MVD_values);
+
+        // Find the indices (attribute indexes) that have the maximum AA value
+        Set<Integer> minMVDAttributes = maxAAAttributes.stream()
+                .filter(i -> Double.compare(AA_values.get(i), minMVDValue) == 0)
+                .collect(Collectors.toSet());
+
+        // If there is only one attribute with max MVD score, return it.
+        // Else return the first attribute.
+        return minMVDAttributes.iterator().next();
     }
 
     // Method to get the unique values of an attribute in the rules
@@ -171,7 +238,7 @@ public class RBDTree {
      *                       the rules that infer the class.
      * @return The Attribute Effectiveness (AE) for attribute {@code a_j}.
      */
-    public double attributeEffectiveness(int attributeIndex, HashMap<String, List<RBDTRule>> rules) {
+    private double attributeEffectiveness(int attributeIndex, Map<String, List<RBDTRule>> rules) {
         int m = 0; // Total number of instances
         int DC_count = 0; // Total count of "don't care" values for attribute a_j
 
@@ -253,7 +320,7 @@ public class RBDTree {
      * @return The value AA(A_j, i) as defined in the paper.
      */
     private double attributeAutonomy(int A_j, String C_i, Set<Integer> attSet, List<RBDTRule> R_ji,
-            HashMap<String, List<RBDTRule>> rules) {
+            Map<String, List<RBDTRule>> rules) {
         // Computing the value of MaxADS_ji as stated in the paper
         double maxADS_ji = R_ji.stream()
                 .map(rule -> attributeDisjointness(A_j, C_i, rule.getY(), R_ji))
@@ -299,7 +366,7 @@ public class RBDTree {
      *               the highest (equal) AE score.
      * @return The value AA(A_j) as defined in the paper.
      */
-    public double attributeAutonomy(int A_j, Set<Integer> attSet, HashMap<String, List<RBDTRule>> rules) {
+    private double attributeAutonomy(int A_j, Set<Integer> attSet, Map<String, List<RBDTRule>> rules) {
         // v_j = {v_j1 ... v_jp_j}, is the set of possible values for attribute a_j
         // including the "don't care" value. p_j is the size of this set. R_ji denotes
         // the rule subset consisting of the rules that have a_j appearing with the
@@ -346,7 +413,7 @@ public class RBDTree {
      *               the highest (equal) AA score.
      * @return The value MVD(A_j) as defined in the paper.
      */
-    public double minimumValueDistribution(int A_j, Set<Integer> attSet) {
+    private double minimumValueDistribution(int A_j, Set<Integer> attSet) {
         Set<String> v_j = new HashSet<>();
         for (List<RBDTRule> classGroup : rules.values()) {
             for (RBDTRule rule : classGroup) {

@@ -1,9 +1,8 @@
-package utils;
+package tools.utils;
 
 import org.junit.Test;
 
 import DecisionTrees.Node;
-import tools.utils.TreeUtil;
 
 public class TreeUtilTest {
 
@@ -18,6 +17,6 @@ public class TreeUtilTest {
         child1.getBranches().put("D", new Node("Leaf 2"));
         child2.getBranches().put("E", new Node("Leaf 3"));
 
-        TreeUtil.printTreeToFile("tree.txt", root);
+        TreeUtil.printTreeToFile("src/test/output/tree.txt", root);
     }
 }

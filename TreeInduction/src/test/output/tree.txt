@@ -1,0 +1,11 @@
+Root
+Root -> A
+  Child 1
+  Child 1 -> C
+    Leaf 1
+  Child 1 -> D
+    Leaf 2
+Root -> B
+  Child 2
+  Child 2 -> E
+    Leaf 3

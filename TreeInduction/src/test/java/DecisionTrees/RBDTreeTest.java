@@ -25,12 +25,12 @@ public class RBDTreeTest {
 
         // The list of rules red from the file
         List<RBDTRule> rules = RBDTRuleUtil.readRulesFromFile(
-                "src/test/java/ressources/RandomlySampledRules.json",
+            "src/test/resources/RandomlySampledRules.json",
                 attributeValueMap);
 
         // Create an instance of RBDTree and test its functionality
         RBDTree tree = new RBDTree(rules);
 
-        TreeUtil.printTreeToFile("IrisTree.txt", tree.getRoot());
+        TreeUtil.printTreeToFile("src/test/output/IrisTree.txt", tree.getRoot());
     }
 }
