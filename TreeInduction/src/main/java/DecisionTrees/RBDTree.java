@@ -65,11 +65,11 @@ public class RBDTree {
             List<RBDTRule> RR = getSubsetRules(CR, fitAttribute, value);
 
             if (RR.isEmpty()) {
-                node.branches.put(value, new Node(getMostFrequentClass(CR))); // Leaf node with most frequent class
+                node.getBranches().put(value, new Node(getMostFrequentClass(CR))); // Leaf node with most frequent class
             } else if (allRulesBelongToSameClass(RR)) {
-                node.branches.put(value, new Node(RR.get(0).getY())); // Leaf node with decision class
+                node.getBranches().put(value, new Node(RR.get(0).getY())); // Leaf node with decision class
             } else {
-                node.branches.put(value, buildDecisionTree(RR)); // Recursively build subtree
+                node.getBranches().put(value, buildDecisionTree(RR)); // Recursively build subtree
             }
         }
 
