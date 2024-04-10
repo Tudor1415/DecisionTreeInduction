@@ -13,7 +13,7 @@ public class RBDTRule {
     private String Y;
 
     /** The array of the antecedents of the rule containing the don't care values */
-    private String[] antecedents;
+    private String[] itemsInX;
 
     /**
      * The atomic frequencies of the rule:
@@ -46,7 +46,7 @@ public class RBDTRule {
      */
     public RBDTRule(String Y, String[] antecedents, int freqX, int freqY, int freqZ) {
         this.Y = Y;
-        this.antecedents = antecedents;
+        this.itemsInX = antecedents;
         this.freqX = freqX;
         this.freqY = freqY;
         this.freqZ = freqZ;

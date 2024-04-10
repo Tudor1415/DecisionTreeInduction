@@ -16,12 +16,37 @@ public class RBDTree {
     @Getter
     private Node root;
 
+    private String[] classesString;
+
+    private Map<String, List<RBDTRule>> rules;
+
     // For rounding errors
     public static double epsilon = 0.01;
 
     // Constructor
     public RBDTree(List<RBDTRule> CR) {
+        this.classesString = getClassesString(CR);
+        this.rules = groupRulesByClass(CR);
         this.root = buildDecisionTree(CR);
+    }
+
+    // Groups a list of rules by class
+    private Map<String, List<RBDTRule>> groupRulesByClass(List<RBDTRule> CR) {
+        Map<String, List<RBDTRule>> rules = new HashMap<>();
+
+        for (RBDTRule rule : CR) {
+            rules.computeIfAbsent(rule.getY(), k -> new ArrayList<>()).add(rule);
+        }
+
+        return rules;
+    }
+
+    // Generates an array of class names from a list of rules
+    private String[] getClassesString(List<RBDTRule> CR) {
+        return CR.stream()
+                .map(RBDTRule::getY)
+                .collect(Collectors.toSet())
+                .toArray(new String[0]);
     }
 
     // Helper method to recursively build the decision tree
@@ -86,7 +111,7 @@ public class RBDTree {
 
         // Collect unique values of the specified attribute
         for (RBDTRule rule : rules) {
-            String attributeValue = rule.getAntecedents()[A_j];
+            String attributeValue = rule.getItemsInX()[A_j];
             attributeValues.add(attributeValue);
         }
 
@@ -99,7 +124,7 @@ public class RBDTree {
 
         // Filter rules based on the specific attribute value
         for (RBDTRule rule : rules) {
-            if (rule.getAntecedents()[A_j].equals(value)) {
+            if (rule.getItemsInX()[A_j].equals(value)) {
                 subsetRules.add(rule);
             }
         }
@@ -154,7 +179,7 @@ public class RBDTree {
         for (List<RBDTRule> classRules : rules.values()) {
             for (RBDTRule rule : classRules) {
                 m++;
-                if (rule.getAntecedents()[attributeIndex].equals("DC")) {
+                if (rule.getItemsInX()[attributeIndex].equals("DC")) {
                     DC_count++;
                 }
             }
@@ -185,14 +210,14 @@ public class RBDTree {
         // class i.
         Set<String> V_ij = R_ji.stream()
                 .filter(rule -> rule.getY().equals(C_i))
-                .map(rule -> rule.getAntecedents()[A_j])
+                .map(rule -> rule.getItemsInX()[A_j])
                 .collect(Collectors.toSet());
 
         // The set of values that the attribute A_j can take in rules that infer the
         // class k.
         Set<String> V_kj = R_ji.stream()
                 .filter(rule -> rule.getY().equals(C_k))
-                .map(rule -> rule.getAntecedents()[A_j])
+                .map(rule -> rule.getItemsInX()[A_j])
                 .collect(Collectors.toSet());
 
         // Computing the intersection of sets V_ij and V_kj
@@ -227,7 +252,8 @@ public class RBDTree {
      *               the rules that infer the class.
      * @return The value AA(A_j, i) as defined in the paper.
      */
-    private double attributeAutonomy(int A_j, String C_i, Set<Integer> attSet, List<RBDTRule> R_ji, HashMap<String, List<RBDTRule>> rules) {
+    private double attributeAutonomy(int A_j, String C_i, Set<Integer> attSet, List<RBDTRule> R_ji,
+            HashMap<String, List<RBDTRule>> rules) {
         // Computing the value of MaxADS_ji as stated in the paper
         double maxADS_ji = R_ji.stream()
                 .map(rule -> attributeDisjointness(A_j, C_i, rule.getY(), R_ji))
@@ -282,7 +308,7 @@ public class RBDTree {
         Set<String> v_j = new HashSet<>();
         for (List<RBDTRule> classGroup : rules.values()) {
             for (RBDTRule rule : classGroup) {
-                v_j.add(rule.getAntecedents()[A_j]);
+                v_j.add(rule.getItemsInX()[A_j]);
             }
         }
 
@@ -294,18 +320,19 @@ public class RBDTree {
         for (String v_ji : v_j) {
             List<RBDTRule> ruleSubset = rules.values().stream()
                     .flatMap(List::stream)
-                    .filter(rule -> rule.getAntecedents()[A_j].equals(v_ji))
+                    .filter(rule -> rule.getItemsInX()[A_j].equals(v_ji))
                     .collect(Collectors.toList());
             R_ji.put(v_ji, ruleSubset);
         }
 
         int p_j = v_j.size();
         double sum = 0.0;
+
         // Computing the attribute autonomy for each class.
         for (int i = 1; i <= p_j; i++) {
             String classString = classesString[i];
             List<RBDTRule> R_ji_class = R_ji.get(classString);
-            double autonomy = attributeAutonomy(A_j, classString, attSet, R_ji_class);
+            double autonomy = attributeAutonomy(A_j, classString, attSet, R_ji_class, rules);
             sum += autonomy;
         }
         return 1.0 / sum;
@@ -323,7 +350,7 @@ public class RBDTree {
         Set<String> v_j = new HashSet<>();
         for (List<RBDTRule> classGroup : rules.values()) {
             for (RBDTRule rule : classGroup) {
-                v_j.add(rule.getAntecedents()[A_j]);
+                v_j.add(rule.getItemsInX()[A_j]);
             }
         }
 
